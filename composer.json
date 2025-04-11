@@ -1,5 +1,6 @@
 {
     "name": "vinatis/typescript-generator",
+    "version": "1.0.0",
     "description": "Bundle to generate TypeScript elements based on a Symfony project",
     "keywords": ["symfony", "TypeScript", "doctrine", "entity"],
     "license": "EUPL-1.1",
