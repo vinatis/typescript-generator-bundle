@@ -3,7 +3,7 @@
  * This file is part of the TypeScriptGeneratorBundle.
  */
 
-namespace Irontec\TypeScriptGeneratorBundle\Package;
+namespace Vinatis\TypeScriptGeneratorBundle\Package;
 
 class Package
 {

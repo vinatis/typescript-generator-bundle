@@ -3,9 +3,9 @@
  * This file is part of the TypeScriptGeneratorBundle.
  */
 
-namespace Irontec\TypeScriptGeneratorBundle\Command;
+namespace Vinatis\TypeScriptGeneratorBundle\Command;
 
-use Irontec\TypeScriptGeneratorBundle\Package\Package;
+use Vinatis\TypeScriptGeneratorBundle\Package\Package;
 use PHLAK\SemVer\Version as Versions;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\{InputArgument, InputInterface};

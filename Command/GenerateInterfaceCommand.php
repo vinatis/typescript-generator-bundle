@@ -4,7 +4,7 @@
  * This file is part of the TypeScriptGeneratorBundle.
  */
 
-namespace Irontec\TypeScriptGeneratorBundle\Command;
+namespace Vinatis\TypeScriptGeneratorBundle\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\{InputArgument, InputInterface};
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Irontec\TypeScriptGeneratorBundle\ParseTypeScript\Parser as ParseTypeScript;
+use Vinatis\TypeScriptGeneratorBundle\ParseTypeScript\Parser as ParseTypeScript;
 
 /**
  * @author Irontec <info@irontec.com>

@@ -3,7 +3,7 @@
  * This file is part of the TypeScriptGeneratorBundle.
  */
 
-namespace Irontec\TypeScriptGeneratorBundle\Command;
+namespace Vinatis\TypeScriptGeneratorBundle\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\{ArrayInput, InputArgument, InputInterface};

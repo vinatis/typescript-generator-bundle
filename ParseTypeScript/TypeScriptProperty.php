@@ -3,7 +3,7 @@
  * This file is part of the TypeScriptGeneratorBundle.
  */
 
-namespace Irontec\TypeScriptGeneratorBundle\ParseTypeScript;
+namespace Vinatis\TypeScriptGeneratorBundle\ParseTypeScript;
 
 /**
  * @author Irontec <info@irontec.com>
