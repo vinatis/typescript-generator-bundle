@@ -1,6 +1,6 @@
 <?php
 
-namespace Irontec\TypeScriptGeneratorBundle\Attribute;
+namespace Vinatis\TypeScriptGeneratorBundle\Attribute;
 
 use Attribute;
 

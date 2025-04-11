@@ -5,7 +5,7 @@ Este bundle genera complementeos para usar en TypeScript, basados en un proyecto
 # Install
 
 ````bash
-composer require irontec/typescript-generator-bundle
+composer require vinatis/typescript-generator
 ````
 
 > PHP *>=8.0*

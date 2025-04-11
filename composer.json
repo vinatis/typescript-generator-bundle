@@ -1,13 +1,12 @@
 {
-    "name": "irontec/typescript-generator-bundle",
+    "name": "vinatis/typescript-generator",
     "description": "Bundle to generate TypeScript elements based on a Symfony project",
     "keywords": ["symfony", "TypeScript", "doctrine", "entity"],
-    "homepage": "https://www.irontec.com",
     "license": "EUPL-1.1",
     "type": "symfony-bundle",
     "autoload": {
         "psr-4": {
-            "Irontec\\TypeScriptGeneratorBundle\\": "" 
+            "Vinatis\\TypeScriptGeneratorBundle\\": ""
         }
     },
     "authors" : [{
@@ -17,6 +16,9 @@
         }, {
             "name" : "Daniel Rendon",
             "homepage" : "https://github.com/ddniel16"
+        }, {
+            "name": "Charles Bourtoire",
+            "homepage": "https://github.com/lGabranth"
         }
     ],
     "require" : {

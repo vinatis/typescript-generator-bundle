@@ -3,9 +3,9 @@
  * This file is part of the TypeScriptGeneratorBundle.
  */
 
-namespace Irontec\TypeScriptGeneratorBundle\ParseTypeScript;
+namespace Vinatis\TypeScriptGeneratorBundle\ParseTypeScript;
 
-use Irontec\TypeScriptGeneratorBundle\Attribute\TypeScriptMe;
+use Vinatis\TypeScriptGeneratorBundle\Attribute\TypeScriptMe;
 use ReflectionNamedType;
 
 /**

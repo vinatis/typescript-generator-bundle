@@ -3,7 +3,7 @@
  * This file is part of the TypeScriptGeneratorBundle.
  */
 
-namespace Irontec\TypeScriptGeneratorBundle\DependencyInjection;
+namespace Vinatis\TypeScriptGeneratorBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
