@@ -77,7 +77,7 @@ class GenerateInterfaceCommand extends Command
             return Command::SUCCESS;
         }
 
-        $targetFile = "{$this->projectDir}/{$dirOutput}/models.d.ts";
+        $targetFile = "{$this->projectDir}/{$dirOutput}/index.d.ts";
         $this->writeToFile($targetFile, $content);
         $output->writeln(sprintf('Created %s', $targetFile));
 

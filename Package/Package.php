@@ -14,7 +14,7 @@ class Package
         private string $name,
         private string $version = self::DEFAULT_VERSION,
         private string $description = 'default',
-        private string $types = 'models.d.ts',
+        private string $types = 'index.d.ts',
         private string $author = '',
         private string $license = 'EUPL',
         private array  $keywords = []
