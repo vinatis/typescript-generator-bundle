@@ -166,9 +166,16 @@ class Parser
         $matches = [];
 
         if (preg_match('/@var (.*)/i', $docComment, $matches)) {
-            if (preg_match('/@var[ \t]+([a-z0-9]+)/i', $docComment, $matches)) {
-                $t = trim(strtolower($matches[1]));
-                $result = $this->getTypescriptProperty($t);
+            if (preg_match('/@var\s+([^\s\*\r\n]+)/', $docComment, $matches)) {
+                $type = trim($matches[1]);
+
+                $type = $this->cleanDocBlockType($type);
+
+                if ($this->isSimpleType($type)) {
+                    $result = $this->getTypescriptProperty($type);
+                } else {
+                    $result = $this->getRelationProperty($property);
+                }
             } else {
                 $result = $this->getRelationProperty($property);
             }
@@ -350,5 +357,45 @@ class Parser
         $className = current($classes);
 
         return $namespace . '\\' . $className;
+    }
+
+    /**
+     * Nettoie le type extrait du docblock
+     */
+    private function cleanDocBlockType(string $type): string
+    {
+        // Enleve les backslashes de début
+        if (str_starts_with($type, '\\')) {
+            $type = ltrim($type, '\\');
+        }
+
+        // Gére les types union (ex: DateTime|null)
+        if (str_contains($type, '|')) {
+            $parts = explode('|', $type);
+            $mainType = trim($parts[0]);
+
+            // Retourne le type principal (avant le |)
+            return ltrim($mainType, '\\');
+        }
+
+        return $type;
+    }
+
+    /**
+     * Vérifie si le type est un type simple
+     */
+    private function isSimpleType(string $type): bool
+    {
+        $simpleTypes = [
+                'int', 'integer',
+                'bool', 'boolean',
+                'float', 'double',
+                'string',
+                'array',
+                'mixed',
+                'datetime'
+        ];
+
+        return in_array(strtolower($type), $simpleTypes);
     }
 }
