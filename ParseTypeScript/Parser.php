@@ -6,6 +6,7 @@
 namespace Vinatis\TypeScriptGeneratorBundle\ParseTypeScript;
 
 use Vinatis\TypeScriptGeneratorBundle\Attribute\TypeScriptMe;
+use Vinatis\TypeScriptGeneratorBundle\Attribute\TypeScriptCustomType;
 use ReflectionNamedType;
 
 /**
@@ -153,6 +154,12 @@ class Parser
     {
         $result = self::PARAM_UNKNOWN;
 
+        $customTypeAttributes = $property->getAttributes(TypeScriptCustomType::class);
+        if (!empty($customTypeAttributes)) {
+            $attribute = $customTypeAttributes[0]->newInstance();
+            return 'CUSTOM:' . $attribute->type;
+        }
+
         if (is_null($property->getType()) !== true) {
             return $this->getTypescriptPropertyByPropertyType($property);
         }
@@ -174,7 +181,7 @@ class Parser
                 if ($this->isSimpleType($type)) {
                     $result = $this->getTypescriptProperty($type);
                 } else {
-                    $result = $this->getRelationProperty($property);
+                    $result = $this->getRelationProperty($type);
                 }
             } else {
                 $result = $this->getRelationProperty($property);

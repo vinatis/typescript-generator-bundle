@@ -24,6 +24,24 @@ class TypeScriptBaseInterface
         $this->name = $name;
     }
 
+    private function isCustomType(string $type): bool
+    {
+        if (str_starts_with($type, 'CUSTOM:')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function cleanCustomType(string $type): string
+    {
+        if (str_starts_with($type, 'CUSTOM:')) {
+            return substr($type, 7);
+        }
+
+        return $type;
+    }
+
     public function __toString()
     {
         $imports = [];
@@ -31,20 +49,24 @@ class TypeScriptBaseInterface
 
         foreach ($this->properties as $property) {
 
-            if (in_array($property->type, ['number', 'string', 'boolean', 'any[]']) === false) {
+            if (Parser::PARAM_UNKNOWN === $property->type) {
+                continue;
+            }
 
-                if (Parser::PARAM_UNKNOWN === $property->type) {
-                    continue;
-                }
+            $displayType = $this->cleanCustomType($property->type);
 
-                $rel = str_replace('[]', '', $property->type);
+            if (in_array($displayType, ['number', 'string', 'boolean', 'any[]']) === false) {
+                if (!$this->isCustomType($property->type)) {
+                    $rel = str_replace('[]', '', $displayType);
 
-                if ($this->name !== $rel) {
-                    $imports[] = 'import { ' . $rel . ' } from "./' . $rel . '";';
+                    if ($this->name !== $rel) {
+                        $imports[] = 'import { ' . $rel . ' } from "./' . $rel . '";';
+                    }
                 }
             }
 
-            $pieces[] = '  ' . (string) $property  . ';';
+            $propertyForDisplay = new TypeScriptProperty($property->name, $displayType, $property->isNullable);
+            $pieces[] = '  ' . (string) $propertyForDisplay  . ';';
         }
 
         $result = "";
