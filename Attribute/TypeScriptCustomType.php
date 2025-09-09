@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Vinatis\TypeScriptGeneratorBundle\Attribute;
 
 use Attribute;
@@ -9,7 +8,8 @@ use Attribute;
 class TypeScriptCustomType
 {
     public function __construct(
-        public readonly string $type
+        public readonly string $type,
+        public readonly bool $import = false,
     ) {
     }
 }

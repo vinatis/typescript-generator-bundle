@@ -100,7 +100,7 @@ class Parser
     }
 
     /**
-     * Obtiene el raw de la interaface de Typescript
+     * Obtient le raw de la interaface de Typescript
      */
     public function getOutput(): string
     {
@@ -108,7 +108,7 @@ class Parser
     }
 
     /**
-     * Obtiene la interface que se esta usando actualmente
+     * Obtient la interface que se esta usando actualmente
      */
     public function getCurrentInterface(): TypeScriptBaseInterface
     {
@@ -116,7 +116,7 @@ class Parser
     }
 
     /**
-     * Obtiene el tipo de la variable en Typescript, segun el tipo de la propiedad
+     * Obtient le tipo de la variable en Typescript, segun el tipo de la propiedad
      */
     private function getTypescriptPropertyByPropertyType(\ReflectionProperty $property): string
     {
@@ -148,24 +148,25 @@ class Parser
     }
 
     /**
-     * Obtiene el tipo de la propiedad en formato Typescript, en base a los comentarios/anotaciones
+     * Obtient el tipo de la propiedad en formato Typescript, en base a los comentarios/anotaciones
      */
     private function parsePhpDocForProperty(\ReflectionProperty $property): string
     {
         $result = self::PARAM_UNKNOWN;
 
+        // Vérifier d'abord l'attribut TypeScriptCustomType
         $customTypeAttributes = $property->getAttributes(TypeScriptCustomType::class);
         if (!empty($customTypeAttributes)) {
             $attribute = $customTypeAttributes[0]->newInstance();
-            return 'CUSTOM:' . $attribute->type;
+            return ($attribute->import ? 'CUSTOM_WITH_IMPORT:' : 'CUSTOM:'). $attribute->type;
         }
 
+        // LOGIQUE ORIGINALE EXACTE (non modifiée)
         if (is_null($property->getType()) !== true) {
             return $this->getTypescriptPropertyByPropertyType($property);
         }
 
         $docComment = $property->getDocComment();
-
         if (!is_string($docComment)) {
             return $result;
         }
@@ -230,7 +231,7 @@ class Parser
     }
 
     /**
-     * Obtiene el nombre de la entidad relacionada, si esta en un comentario con el formato "@var \App\Entity\Test"
+     * Obtient le nombre de la entidad relacionada, si esta en un comentario con el formato "@var \App\Entity\Test"
      */
     private function getRelationProperty(string $type): string
     {
@@ -251,7 +252,7 @@ class Parser
     }
 
     /**
-     * Obtiene el nombre de la entidad relacionada, en base a una anotación de doctrine.
+     * Obtient le nombre de la entidad relacionada, en base a una anotación de doctrine.
      */
     private function getRelationCollectionProperty(\ReflectionProperty $type): string
     {
@@ -316,7 +317,7 @@ class Parser
     }
 
     /**
-     * Obtiene el namespace y nombre de clase, de un archivo PHP
+     * Obtient le namespace y nombre de clase, de un archivo PHP
      *
      * https://stackoverflow.com/a/7153391
      */
@@ -353,8 +354,8 @@ class Parser
         $classes = [];
         for ($i = 2; $i < $count; $i++) {
             if ($tokens[$i - 2][0] == T_CLASS
-            && $tokens[$i - 1][0] == T_WHITESPACE
-            && $tokens[$i][0] == T_STRING
+                && $tokens[$i - 1][0] == T_WHITESPACE
+                && $tokens[$i][0] == T_STRING
             ) {
                 $class_name = $tokens[$i][1];
                 $classes[] = $class_name;
@@ -394,13 +395,13 @@ class Parser
     private function isSimpleType(string $type): bool
     {
         $simpleTypes = [
-                'int', 'integer',
-                'bool', 'boolean',
-                'float', 'double',
-                'string',
-                'array',
-                'mixed',
-                'datetime'
+            'int', 'integer',
+            'bool', 'boolean',
+            'float', 'double',
+            'string',
+            'array',
+            'mixed',
+            'datetime'
         ];
 
         return in_array(strtolower($type), $simpleTypes);

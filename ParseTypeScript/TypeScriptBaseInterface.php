@@ -24,19 +24,17 @@ class TypeScriptBaseInterface
         $this->name = $name;
     }
 
-    private function isCustomType(string $type): bool
-    {
-        if (str_starts_with($type, 'CUSTOM:')) {
-            return true;
-        }
-
-        return false;
-    }
-
+    /**
+     * Nettoie le type en enlevant les marqueurs custom
+     */
     private function cleanCustomType(string $type): string
     {
         if (str_starts_with($type, 'CUSTOM:')) {
             return substr($type, 7);
+        }
+
+        if (str_starts_with($type, 'CUSTOM_WITH_IMPORT:')) {
+            return substr($type, 19);
         }
 
         return $type;
@@ -49,22 +47,34 @@ class TypeScriptBaseInterface
 
         foreach ($this->properties as $property) {
 
+            // Vérifier d'abord PARAM_UNKNOWN avant de nettoyer
             if (Parser::PARAM_UNKNOWN === $property->type) {
                 continue;
             }
 
+            // Nettoyer le type pour l'affichage
             $displayType = $this->cleanCustomType($property->type);
 
             if (in_array($displayType, ['number', 'string', 'boolean', 'any[]']) === false) {
-                if (!$this->isCustomType($property->type)) {
+
+                // Vérifier si c'est un type custom (pas d'import nécessaire)
+                if (!str_starts_with($property->type, 'CUSTOM:')) {
                     $rel = str_replace('[]', '', $displayType);
 
                     if ($this->name !== $rel) {
-                        $imports[] = 'import { ' . $rel . ' } from "./' . $rel . '";';
+
+                        if (str_starts_with($property->type, 'CUSTOM_WITH_IMPORT:')) {
+                            $matches = [];
+                            preg_match('/\b[A-Z][a-zA-Z]*\b/', $rel, $matches);
+                            $rel = $matches[0];
+                        }
+
+                        $imports[] = "import type { " . $rel . " } from './" . $rel . "';";
                     }
                 }
             }
 
+            // Utiliser le type nettoyé pour l'affichage
             $propertyForDisplay = new TypeScriptProperty($property->name, $displayType, $property->isNullable);
             $pieces[] = '  ' . (string) $propertyForDisplay  . ';';
         }
