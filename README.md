@@ -2,13 +2,15 @@
 
 Ce bundle génère des éléments TypeScript basés sur un projet Symfony.
 
+> PHP *^8.4* — Symfony *^7.4*
+
 # Installation
+
+Ce bundle est disponible sur [Packagist](https://packagist.org/packages/vinatis/typescript-generator) :
 
 ```bash
 composer require vinatis/typescript-generator
 ```
-
-> PHP *>=8.2* — Symfony *^7.0*
 
 # Commandes disponibles
 
@@ -46,34 +48,31 @@ Ce commande accepte 2 paramètres, dont un obligatoire et un optionnel.
 **output-dir** *(Obligatoire)* : Répertoire où les interfaces seront créées.
 **entities-dir** *(Optionnel)* : Répertoire des entités à utiliser pour générer les interfaces. Par défaut : `src/Entity/`.
 
-Pour qu'une entité soit convertie en interface, il est nécessaire d'ajouter le commentaire `#TypeScriptMe` ou l'attribut `#[TypeScriptMe]` dans la définition de la classe. Exemple :
+Pour qu'une entité soit convertie en interface, ajoutez l'attribut `#[TypeScriptMe]` dans la définition de la classe :
 
 ```php
 <?php
 namespace App\Entity;
 
-// Avec annotation (ancienne syntaxe)
-/**
- * #TypeScriptMe
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- */
-class User
-{
-    // ...
-}
-```
+use Vinatis\TypeScriptGeneratorBundle\Attribute\TypeScriptMe;
 
-```php
-<?php
-namespace App\Entity;
-
-// Avec attribut PHP 8 (syntaxe recommandée avec Symfony 7)
 #[TypeScriptMe]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
 {
     // ...
 }
+```
+
+### Types personnalisés
+
+Pour forcer un type TypeScript personnalisé sur une propriété, utilisez l'attribut `#[TypeScriptCustomType]` :
+
+```php
+use Vinatis\TypeScriptGeneratorBundle\Attribute\TypeScriptCustomType;
+
+#[TypeScriptCustomType('MyCustomType')]
+private string $status;
 ```
 
 ### Types supportés
@@ -91,13 +90,15 @@ class User
 
 ### Exemple
 
-Entité PHP avec attributs Symfony 7 / Doctrine :
+Entité PHP :
 
 ```php
 // src/Entity/User.php
 <?php
 
 namespace App\Entity;
+
+use Vinatis\TypeScriptGeneratorBundle\Attribute\TypeScriptMe;
 
 #[TypeScriptMe]
 #[ORM\Table(name: 'user')]
@@ -163,7 +164,6 @@ Cette commande génère un fichier `package.json` avec les données de base pour
 Exemple de `package.json` généré :
 
 ```json
-// interfaces/package.json
 {
     "name": "@mon-org/mon-projet",
     "version": "0.0.1",
