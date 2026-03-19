@@ -31,7 +31,7 @@ class GeneratePackageCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('typescript:generate:package');
         $this->setDescription('Generate or update package.json');

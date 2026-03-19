@@ -31,7 +31,7 @@ class GenerateInterfaceCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('typescript:generate:interfaces');
         $this->setDescription('Generate TypeScript interfaces from Doctrine Entities');

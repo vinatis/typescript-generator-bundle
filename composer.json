@@ -18,19 +18,19 @@
             "name" : "Daniel Rendon",
             "homepage" : "https://github.com/ddniel16"
         }, {
-            "name": "Charles Bourtoire",
-            "homepage": "https://github.com/lGabranth"
+            "name": "Vinatis Informatique",
+            "homepage": "https://github.com/vinatis"
         }
     ],
     "require" : {
-        "php": "^8",
-        "symfony/console": "^6.4|^7",
-        "symfony/filesystem": "^6.4|^7",
-        "symfony/finder": "^6.4|^7",
+        "php": "^8.2",
+        "symfony/console": "^7.0",
+        "symfony/filesystem": "^7.0",
+        "symfony/finder": "^7.0",
         "phlak/semver": "^3.0.1",
-        "symfony/dependency-injection": "^6.4|^7",
-        "symfony/config": "^6.4|^7",
-        "symfony/http-kernel": "^6.4|^7"
+        "symfony/dependency-injection": "^7.0",
+        "symfony/config": "^7.0",
+        "symfony/http-kernel": "^7.0"
     }
     ,
     "require-dev": {

@@ -1,221 +1,206 @@
 # TypeScriptGeneratorBundle
 
-Este bundle genera complementeos para usar en TypeScript, basados en un proyecto symfony.
+Ce bundle génère des éléments TypeScript basés sur un projet Symfony.
 
-# Install
+# Installation
 
-````bash
+```bash
 composer require vinatis/typescript-generator
-````
+```
 
-> PHP *>=8.0*
+> PHP *>=8.2* — Symfony *^7.0*
 
-# Commands
+# Commandes disponibles
 
-[Generate Interface](#generate-interface)
-[Generate Package](#generate-package)
-[Generate All](#generate-all)
-
-## Generate Interface
-
-Este funcionalidad consiste, en crear interfaces de TypeScript basandose clases PHP pensadas en funcionar como entidades de doctrine.
-
-Estas interfaces se crean teniendo en cuenta las propiedades de estas clases. Como tal se tiene 3 formas de obtener el tipo de cada propiedad.
-
-* Definición del tipado de la propiedad fuerte, disponible desde PHP 7.4
-  * > private int $id;
-* Definición del tipado de la propiedad, en el comentario de esta
-  * > @var int
-* Definición del tipado de la propiedad, en anotaciones de doctrine
-  * > @ORM\Column(type="integer")
-
-En caso de no encontrar un tipo, se generara la interface con el tipo "**unknown**".
+- [Générer des interfaces](#générer-des-interfaces)
+- [Générer un package](#générer-un-package)
+- [Tout générer](#tout-générer)
 
 ---
 
-La generación de interfaces se hace ejecutando el siguiente comando:
+## Générer des interfaces
 
-````bash
+Cette fonctionnalité permet de créer des interfaces TypeScript à partir de classes PHP conçues pour fonctionner comme des entités Doctrine.
+
+Les interfaces sont générées en se basant sur les propriétés de ces classes. Il existe 3 façons d'obtenir le type de chaque propriété :
+
+* Typage fort de la propriété (disponible depuis PHP 7.4)
+  * > `private int $id;`
+* Typage dans le commentaire de la propriété
+  * > `@var int`
+* Typage via les annotations ou attributs Doctrine
+  * > `@ORM\Column(type="integer")` ou `#[ORM\Column(type: 'integer')]`
+
+Si aucun type n'est trouvé, l'interface sera générée avec le type `unknown`.
+
+---
+
+La génération des interfaces s'effectue avec la commande suivante :
+
+```bash
 bin/console typescript:generate:interface output-dir [entities-dir]
-````
+```
 
-Este comando acepta 2 parametros, los cuales uno es obligatorio y otro opcional.
+Ce commande accepte 2 paramètres, dont un obligatoire et un optionnel.
 
-**output-dir** [*Obligatorio*]: Directorio donde se crearan las interfaces
-**entities-dir** [*Opcional*]: Directorio de las entidades que se usaran para generar las interfaces. Por defecto se busca en "**src/Entity/**"
+**output-dir** *(Obligatoire)* : Répertoire où les interfaces seront créées.
+**entities-dir** *(Optionnel)* : Répertoire des entités à utiliser pour générer les interfaces. Par défaut : `src/Entity/`.
 
-Para volver una entidad en una interface, es necesario escribir el comentario "**#TypeScriptMe**" o  atributo `#[TypeScriptMe]` en la definición de la clase, Ejemplo:
+Pour qu'une entité soit convertie en interface, il est nécessaire d'ajouter le commentaire `#TypeScriptMe` ou l'attribut `#[TypeScriptMe]` dans la définition de la classe. Exemple :
 
-````php
+```php
 <?php
 namespace App\Entity;
 
-...
-
+// Avec annotation (ancienne syntaxe)
 /**
  * #TypeScriptMe
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
 class User
 {
+    // ...
+}
+```
 
-...
-````
-
-````php
+```php
 <?php
 namespace App\Entity;
 
-...
-
+// Avec attribut PHP 8 (syntaxe recommandée avec Symfony 7)
 #[TypeScriptMe]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
 {
+    // ...
+}
+```
 
-...
-````
+### Types supportés
 
+| TypeScript | PHP / Doctrine |
+|---|---|
+| `number` | int, integer, smallint, bigint, decimal, float |
+| `string` | string, text, guid, date, time, datetime, datetimetz |
+| `boolean` | boolean |
+| `Interface` | Interface liée dans une relation one-to-one |
+| `Interface[]` | Tableau d'interfaces dans une relation one-to-many |
+| `unknown` | Tout autre type non reconnu |
 
-### Tipado en TypeScript
+> Si les annotations Doctrine définissent `nullable=true`, ou si le typage PHP utilise `?` avant le type, la propriété sera marquée comme optionnelle (`?`) dans l'interface TypeScript générée.
 
-Listado de tipados soportados:
+### Exemple
 
-| TypeScript | PHP/Doctrine |
-|-|-|
-| number | int - integer - smallint - bigint - decimal - float |
-| string | string - text - guid - date - time - datetime - datetimetz |
-| boolean | boolean |
-| interface | Interface de una interface relacionada en un uno a uno |
-| interface[] | Array de interfaces, en una relación uno a muchos |
-| unknown | Cuando no es ninguna de las anteriores |
+Entité PHP avec attributs Symfony 7 / Doctrine :
 
-> Si se usan las anotaciones de dotrine y se tiene definido "**nullable=true**" o en el tipado fuerte de la propiedad esta definido el ? antes del tipo, se aplica el ? despues del nombre de la propiedad, que se interpreta como un parametro optativo.
-
-### Example
-
-Entidad en PHP y con anotaciones.
-
-````php
+```php
 // src/Entity/User.php
 <?php
 
 namespace App\Entity;
 
-/**
- * #TypeScriptMe
- * @ORM\Table(name="user")
- */
+#[TypeScriptMe]
+#[ORM\Table(name: 'user')]
 class User
 {
-
-   /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @var int
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private int $id;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     * @var string
-     */
-    private $name;
+    #[ORM\Column(type: 'string', length: 100)]
+    private string $name;
 
-    /**
-     * @ORM\Column(type="string", length=100, nullable=true)
-     */
-    private $lastname;
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private ?string $lastname;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Factory", mappedBy="author")
-     */
+    #[ORM\OneToMany(targetEntity: Factory::class, mappedBy: 'author')]
     private \Doctrine\Common\Collections\Collection $factories;
 
-    /**
-     * @ORM\OneToOne(targetEntity="Photo", mappedBy="user")
-     */
-    private $photo;
+    #[ORM\OneToOne(targetEntity: Photo::class, mappedBy: 'user')]
+    private ?Photo $photo;
 
-....
+    // ...
+}
+```
 
-````
+Interface TypeScript générée :
 
-Interface de TypeScript generada
-
-````typescript
+```typescript
 // interfaces/User.ts
 
 export interface User {
   id: number,
   name: string,
   lastname?: string,
-  enabled: boolean,
   photo: Photo,
   factories: Factory[]
 }
-````
+```
 
-Para facilitar el uso de las interfaces, se general el fichero "**models.d.ts**" en el que se hace el export de todas las interfaces.
+Pour faciliter l'utilisation des interfaces, le fichier `models.d.ts` est généré automatiquement avec l'export de toutes les interfaces :
 
-````typescript
+```typescript
 // interfaces/models.d.ts
 
 export * from './User';
 export * from './Photo';
 export * from './Factory';
-````
+```
 
-## Generate Package
+---
 
-````bash
+## Générer un package
+
+```bash
 bin/console typescript:generate:package output-dir [package-name] [version]
-````
+```
 
-Con este comando se genera un fichero **package.json** con los datos básicos para publicar en un reposiorio privado de npm.
+Cette commande génère un fichier `package.json` avec les données de base pour publier dans un dépôt npm privé.
 
-Cada vez que se ejecute el generador de package, por defecto se actualiza la versión "**Patch**" de este, con la opción de pasar una versión en concreto o subir de "patch", "minor" o "major".
+À chaque exécution, la version **patch** est incrémentée par défaut. Il est possible de passer une version spécifique ou d'indiquer `patch`, `minor` ou `major`.
 
-Ejemplo del **package.json** que se genera:
+Exemple de `package.json` généré :
 
-````json
+```json
 // interfaces/package.json
 {
-    "name": "@irontec/example",
+    "name": "@mon-org/mon-projet",
     "version": "0.0.1",
-    "description": "typescript interfaces for @irontec/example project",
+    "description": "typescript interfaces for @mon-org/mon-projet",
     "types": "models.d.ts",
     "keywords": [],
     "author": "",
     "license": "EUPL"
 }
-````
+```
 
-> [Librería con la que se gestionan las versiones](https://github.com/PHLAK/SemVer)
+> [Bibliothèque utilisée pour la gestion des versions](https://github.com/PHLAK/SemVer)
 
-## Generate All
+---
 
-````bash
+## Tout générer
+
+```bash
 bin/console typescript:generate:all output-dir [entities-dir] [package-name] [version]
-````
+```
 
-Ejecuta los comandos anteriores.
+Exécute les deux commandes précédentes en une seule fois.
 
+---
 
-### Publicar en un repositorio privado de NPM
+### Publier dans un dépôt npm privé
 
-Para publicar en un repositorio privado, es necesario generar previamente el fichero **package.json** y [tener instalado npm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Pour publier dans un dépôt privé, il faut avoir préalablement généré le fichier `package.json` et [avoir npm installé](https://github.com/nvm-sh/nvm#installing-and-updating).
 
+1) Se connecter à npm
 
-1) Iniciar sesión en NPM
+```bash
+npm adduser --registry https://npm.exemple.com
+```
 
-````bash
-npm adduser --registry https://npm.example.com
-````
+2) Publier / mettre à jour les interfaces
 
-2) Publicar/Actualizar los cambios en las interfaces
-
-````bash
-npm publish --registry https://npm.example.com
-````
+```bash
+npm publish --registry https://npm.exemple.com
+```
