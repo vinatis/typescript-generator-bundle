@@ -75,7 +75,7 @@ class TypeScriptBaseInterface
             }
 
             // Utiliser le type nettoyé pour l'affichage
-            $propertyForDisplay = new TypeScriptProperty($property->name, $displayType, $property->isNullable);
+            $propertyForDisplay = new TypeScriptProperty($property->name, $displayType, $property->isNullable, $property->isOptional);
             $pieces[] = '  ' . (string) $propertyForDisplay  . ';';
         }
 
