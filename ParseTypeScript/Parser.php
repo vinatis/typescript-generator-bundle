@@ -93,15 +93,7 @@ class Parser
                 $isNull = true;
             }
 
-            $hasDefault = false;
-            try {
-                $property->hasDefaultValue();
-                $hasDefault = true;
-            } catch (\ReflectionException) {
-                $hasDefault = false;
-            }
-
-            $isOptional = $hasDefault || $isNull;
+            $isOptional = $property->hasDefaultValue() || $isNull;
 
             $this->currentInterface->properties[] = new TypeScriptProperty($property->getName(), $type, $isNull, $isOptional);
 
