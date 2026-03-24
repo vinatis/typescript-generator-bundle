@@ -93,7 +93,14 @@ class Parser
                 $isNull = true;
             }
 
-            $this->currentInterface->properties[] = new TypeScriptProperty($property->getName(), $type, $isNull);
+            $isOptional = $property->hasDefaultValue() || $isNull;
+
+            $this->currentInterface->properties[] = new TypeScriptProperty($property->getName(), $type, $isNull, $isOptional);
+
+            // gestion du trait SoftDeletable (gedmo)
+            if ($property->getName() === 'deletedAt' && $reflectionClass->hasMethod('isDeleted')) {
+                $this->currentInterface->properties[] = new TypeScriptProperty('deleted', 'boolean', false, true);
+            }
         }
 
         $this->output[] = $this->currentInterface;

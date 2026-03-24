@@ -18,15 +18,20 @@ class TypeScriptProperty
 
     public bool $isNullable;
 
-    public function __construct(string $name, string $type = 'unknown', bool $isNullable = false)
+    public bool $isOptional;
+
+    public function __construct(string $name, string $type = 'unknown', bool $isNullable = false, bool $isOptional = false)
     {
         $this->name = $name;
         $this->type = $type;
         $this->isNullable = $isNullable;
+        $this->isOptional = $isOptional;
     }
 
     public function __toString(): string
     {
-        return $this->name . '?: ' . $this->type . ($this->isNullable ? ' | null' : '');
+        $separator = $this->isOptional ? '?: ' : ': ';
+
+        return $this->name . $separator . $this->type . ($this->isNullable ? ' | null' : '');
     }
 }
