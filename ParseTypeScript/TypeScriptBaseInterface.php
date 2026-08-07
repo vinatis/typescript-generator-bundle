@@ -79,9 +79,11 @@ class TypeScriptBaseInterface
             $pieces[] = '  ' . (string) $propertyForDisplay  . ';';
         }
 
-        $result = "";
-        $result .= implode("\n", array_unique($imports));
-        $result .= "\nexport interface {$this->name} {\n";
+        $result = implode("\n", array_unique($imports));
+        if (!empty($imports)) {
+            $result .= "\n\n";
+        }
+        $result .= "export interface {$this->name} {\n";
         $result .= implode("\n", $pieces);
         $result .= "\n}\n";
 
